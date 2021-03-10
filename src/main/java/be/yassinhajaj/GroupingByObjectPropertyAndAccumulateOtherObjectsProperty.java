@@ -33,11 +33,7 @@ public class GroupingByObjectPropertyAndAccumulateOtherObjectsProperty {
                         List<Child> children = parent.getChildren();
                         List<Child> childrenToAccumulate = p.getChildren();
 
-                        List<Child> newChildList = new ArrayList<>();
-                        newChildList.addAll(children);
-                        newChildList.addAll(childrenToAccumulate);
-
-                        parent.setChildren(newChildList);
+                        children.addAll(childrenToAccumulate);
                         return;
                     }
                 }
@@ -48,16 +44,14 @@ public class GroupingByObjectPropertyAndAccumulateOtherObjectsProperty {
         @Override
         public BinaryOperator<List<Parent>> combiner() {
             return (firstList, secondList) -> {
-                List<Parent> parents = new ArrayList<>();
-                parents.addAll(firstList);
-                parents.addAll(secondList);
-                return parents;
+                firstList.addAll(secondList);
+                return firstList;
             };
         }
 
         @Override
         public Function<List<Parent>, List<Parent>> finisher() {
-            return list -> list;
+            return Function.identity();
         }
 
         @Override
