@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -27,17 +28,19 @@ public class GroupingByObjectPropertyAndAccumulateOtherObjectsProperty {
 
         @Override
         public BiConsumer<List<Parent>, Parent> accumulator() {
-            return (list, p) -> {
+            return (list, otherParent) -> {
                 for (Parent parent : list) {
-                    if (parent.getPropertyToGroupBy().equals(p.getPropertyToGroupBy())) {
-                        List<Child> children = parent.getChildren();
-                        List<Child> childrenToAccumulate = p.getChildren();
-
-                        children.addAll(childrenToAccumulate);
+                    if (parent.getPropertyToGroupBy().equals(otherParent.getPropertyToGroupBy())) {
+                        if (otherParent.getChildren() != null) {
+                            parent.getChildren().addAll(otherParent.getChildren());
+                        }
                         return;
                     }
                 }
-                list.add(p);
+                if (otherParent.getChildren() == null) {
+                    otherParent.setChildren(Collections.emptyList());
+                }
+                list.add(otherParent);
             };
         }
 
