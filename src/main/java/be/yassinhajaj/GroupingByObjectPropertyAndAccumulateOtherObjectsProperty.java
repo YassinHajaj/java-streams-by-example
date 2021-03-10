@@ -16,10 +16,18 @@ import java.util.stream.Collector;
 public class GroupingByObjectPropertyAndAccumulateOtherObjectsProperty {
 
     public List<Parent> run(List<Parent> parents) {
-        return parents.stream().collect(new CustomCollector());
+        return parents.stream().collect(CustomCollector.getInstance());
     }
 
     private static class CustomCollector implements Collector<Parent, List<Parent>, List<Parent>> {
+
+        private CustomCollector() {
+            // Need Factory Method
+        }
+
+        public static CustomCollector getInstance() {
+            return new CustomCollector();
+        }
 
         @Override
         public Supplier<List<Parent>> supplier() {
